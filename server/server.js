@@ -23,16 +23,37 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
   console.log('new user connected');
 
+  // socket.emit from Admin text Welcome to Chat App
+  socket.emit('newMessage', {
+    from: 'Admin',
+    text: 'Welcome to Chat App',
+    createdAt: new Date().getTime()
+  });
+
+  // socket.broadcast.emit from Admin text New user joined
+  socket.broadcast.emit('newMessage', {
+    from: 'Admin',
+    text: 'New user joined',
+    createdAt: new Date().getTime()
+  });
+
   // listen for createMessage event from client
   socket.on('createMessage', (message) => {
-    console.log('created message object', message);
 
+    console.log('created message object', message);
     // once server receives message, sends it out to be displayed to chat screen?
     io.emit('newMessage', {
       from: message.from,
       text: message.text,
       createdAt: new Date().getTime()
     });
+
+    // emits to everyone but this socket
+    // socket.broadcast.emit('newMessage', {
+    //   from: message.from,
+    //   text: message.text,
+    //   createdAt: new Date().getTime()
+    // });
   });
 
   // listens for disconnected event from client
