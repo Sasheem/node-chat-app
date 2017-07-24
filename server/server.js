@@ -23,16 +23,16 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
   console.log('new user connected');
 
-  // emit a newMessage event to client
-  socket.emit('newMessage', {
-    from: 'server',
-    text: 'hello client',
-    createdAt: 140
-  });
-
   // listen for createMessage event from client
   socket.on('createMessage', (message) => {
     console.log('created message object', message);
+
+    // once server receives message, sends it out to be displayed to chat screen?
+    io.emit('newMessage', {
+      from: message.from,
+      text: message.text,
+      createdAt: new Date().getTime()
+    });
   });
 
   // listens for disconnected event from client
@@ -47,3 +47,6 @@ server.listen(port, () => {
 });
 
 module.exports = {app};
+
+// socket.emit emits an event to a single connection
+// io.emit emits an event to every connection
