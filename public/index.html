@@ -12,21 +12,10 @@
   <body>
     <h1>Welcome to my chat app!</h1>
 
-
     <!-- socket.io -->
     <script src="/socket.io/socket.io.js"></script>
 
-    <script>
-      var socket = io();     // request from client to server, keep connection open
-
-      socket.on('connect', () => {
-        console.log('connected to server');
-      });
-
-      socket.on('disconnect', () => {
-        console.log('disconnected from server');
-      });
-    </script>
+    <script src="/js/index.js"></script>
 
     <!-- jQuery first, then Tether, then Bootstrap JS. -->
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>

@@ -23,12 +23,23 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
   console.log('new user connected');
 
+  // emit a newMessage event to client
+  socket.emit('newMessage', {
+    from: 'server',
+    text: 'hello client',
+    createdAt: 140
+  });
+
+  // listen for createMessage event from client
+  socket.on('createMessage', (message) => {
+    console.log('created message object', message);
+  });
+
+  // listens for disconnected event from client
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
 });
-
-
 
 // listen() is called on the express app we initialized at line 17
 server.listen(port, () => {
