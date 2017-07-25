@@ -7,6 +7,7 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
+const {generateMessage} = require('./utils/message');
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
 
@@ -24,29 +25,17 @@ io.on('connection', (socket) => {
   console.log('new user connected');
 
   // socket.emit from Admin text Welcome to Chat App
-  socket.emit('newMessage', {
-    from: 'Admin',
-    text: 'Welcome to Chat App',
-    createdAt: new Date().getTime()
-  });
+  socket.emit('newMessage', generateMessage('Admin', 'Welcome to the Chat App!'));
 
   // socket.broadcast.emit from Admin text New user joined
-  socket.broadcast.emit('newMessage', {
-    from: 'Admin',
-    text: 'New user joined',
-    createdAt: new Date().getTime()
-  });
+  socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined'));
 
   // listen for createMessage event from client
   socket.on('createMessage', (message) => {
 
     console.log('created message object', message);
     // once server receives message, sends it out to be displayed to chat screen?
-    io.emit('newMessage', {
-      from: message.from,
-      text: message.text,
-      createdAt: new Date().getTime()
-    });
+    io.emit('newMessage', generateMessage(message.from, message.text));
 
     // emits to everyone but this socket
     // socket.broadcast.emit('newMessage', {
