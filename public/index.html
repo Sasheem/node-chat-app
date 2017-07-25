@@ -8,20 +8,42 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
+    <style type="text/css">
+      #messages-div {
+        margin-bottom: 20px;
+      }
+      #form-btn {
+        margin-top: 5px;
+        float: right;
+      }
+    </style>
   </head>
   <body>
-    <h1>Welcome to my chat app!</h1>
+    <p>Welcome to my chat app!</p>
+
+    <div id="messages-div" class="container">
+      <ol id="messages" class="list-group"></ol>
+    </div>
+
+    <form id="message-form">
+      <div class="form-group container">
+        <input class="form-control" name="message" type="text" placeholder="Message"/>
+        <button id="form-btn" type="submit" class="btn btn-primary">Send</button>
+      </div>
+    </form>
 
     <!-- socket.io -->
     <script src="/socket.io/socket.io.js"></script>
-
-    <script src="/js/index.js"></script>
-
+    <!--  jQuery latest version -->
+    <script src="/js/libs/jquery-3.2.1.min.js"></script>
     <!-- jQuery first, then Tether, then Bootstrap JS. -->
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script> -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+    <script src="/js/index.js"></script>
   </body>
 </html>
