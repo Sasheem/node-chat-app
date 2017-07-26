@@ -7,7 +7,7 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
-const {generateMessage} = require('./utils/message');
+const {generateMessage, generateLocationMessage} = require('./utils/message');
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
 
@@ -37,6 +37,13 @@ io.on('connection', (socket) => {
     // once server receives message, sends it out to be displayed to chat screen?
     io.emit('newMessage', generateMessage(message.from, message.text));
     callback('this is from the server');
+  });
+
+  // listen for createLocationMessage event from the client
+  socket.on('createLocationMessage', (coords) => {
+    // emit a new message event for now with a message containing the url
+    // remember io.emit sends to all users
+    io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
   });
 
   // listens for disconnected event from client

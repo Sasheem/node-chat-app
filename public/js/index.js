@@ -19,6 +19,18 @@ socket.on('newMessage', function (message) {
   jQuery('#messages').append(li);
 });
 
+// listen for createLocationMessage event from the server
+socket.on('newLocationMessage', function (message) {
+  var li = jQuery('<li class=\"list-group-item\"></li>');
+  // target set to _blank will open link in new tab
+  var anchor = jQuery('<a target="_blank">My current location</a>');
+
+  li.text(`${message.from}: `);           // helps prevent anyting trying to inject malicous code
+  anchor.attr('href', message.url);       // this one too
+  li.append(anchor);
+  jQuery('#messages').append(li);
+});
+
 // event listener for when user submits form
 jQuery('#message-form').on('submit', function (e) {
   e.preventDefault();     // cancels out the refresh page that happens autmatically when submit button clicked
@@ -27,6 +39,25 @@ jQuery('#message-form').on('submit', function (e) {
     from: 'User',
     text: jQuery('[name=message]').val()
   }, function() {
+    // do nothing, function arg needs to be here?
+  });
+});
 
+// set up a click listener for the send-location button
+var locationButton = jQuery('#send-location');
+locationButton.on('click', function () {
+  // make sure user has access to geolocation api
+  if (!navigator.geolocation) {
+    return alert('Geolocation not supported by your browser');
+  }
+  // now fetch location, or alert error if unable to fetch
+  navigator.geolocation.getCurrentPosition(function (position) {
+    // success case
+    socket.emit('createLocationMessage', {
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude
+    });
+  }, function () {
+    alert('Unable to fetch location');
   });
 });
