@@ -1,12 +1,10 @@
-// create express app
-// configure express static middleware
-// app.listen to start server on port 3000
-// callback to say server is up on port 3000
+// library imports
 const path = require('path');
 const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
+// local imports
 const {generateMessage, generateLocationMessage} = require('./utils/message');
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
@@ -36,7 +34,7 @@ io.on('connection', (socket) => {
     console.log('created message object', message);
     // once server receives message, sends it out to be displayed to chat screen?
     io.emit('newMessage', generateMessage(message.from, message.text));
-    callback('this is from the server');
+    callback();
   });
 
   // listen for createLocationMessage event from the client

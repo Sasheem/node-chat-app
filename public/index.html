@@ -6,47 +6,37 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/styles.css">
 
-    <style type="text/css">
-      #messages-div {
-        margin-bottom: 20px;
-      }
-      #form-btn {
-        margin-top: 10px;
-        float: right;
-      }
-      #send-location {
-        margin-top: 10px;
-      }
-    </style>
   </head>
-  <body>
-    <p>Welcome to my chat app!</p>
+  <body class="chat">
 
-    <div id="messages-div" class="container">
-      <ol id="messages" class="list-group"></ol>
+    <div class="chat__sidebar">
+      <h3>Users Online</h3>
+      <div id="users"></div>
     </div>
 
-    <form id="message-form">
-      <div class="form-group container">
-        <input class="form-control" name="message" type="text" placeholder="Message"/>
-        <button id="send-location" class="btn btn-info" type="button">Send Location</button>
-        <button id="form-btn" type="submit" class="btn btn-primary">Send</button>
+    <div class="chat__main">
+      <ol id="messages" class="chat__messages"></ol>
+
+      <div class="chat__footer">
+        <form id="message-form">
+
+          <input name="message" type="text" placeholder="Message" autofocus autocomplete="off"/>
+          <button id="send-location" type="button">Send location</button>
+          <button id="form-btn" type="submit">Send</button>
+        </form>
       </div>
-    </form>
+    </div>
+
+
+
+
 
     <!-- socket.io -->
     <script src="/socket.io/socket.io.js"></script>
     <!--  jQuery latest version -->
     <script src="/js/libs/jquery-3.2.1.min.js"></script>
-    <!-- jQuery first, then Tether, then Bootstrap JS. -->
-    <!-- <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script> -->
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
     <script src="/js/index.js"></script>
   </body>
