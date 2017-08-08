@@ -1,5 +1,26 @@
 var socket = io();     // request from client to server, keep connection open
 
+// scroll to bottom if user is close to bottom
+function scrollToBottom () {
+
+  // Selectors
+  var messages = jQuery('#messages');
+  var newMessage = messages.children('li:last-child');
+
+  // Heights
+  var clientHeight = messages.prop('clientHeight');
+  var scrollTop = messages.prop('scrollTop');
+  var scrollHeight = messages.prop('scrollHeight');
+  var newMessageHeight = newMessage.innerHeight();
+  var lastMessageHeight = newMessage.prev().innerHeight();
+  var totalHeights = clientHeight + scrollTop
+  + newMessageHeight + lastMessageHeight;
+
+  if (totalHeights >= scrollHeight) {
+    messages.scrollTop(scrollHeight);
+  }
+}
+
 // event listener for connect event
 socket.on('connect', function () {
   console.log('connected to server');
@@ -20,6 +41,7 @@ socket.on('newMessage', function (message) {
     createdAt: formattedTime
   });
   jQuery('#messages').append(html);
+  scrollToBottom();
 });
 
 // listen for createLocationMessage event from the server
@@ -32,14 +54,7 @@ socket.on('newLocationMessage', function (message) {
     createdAt: formattedTime
   });
   jQuery('#messages').append(html);
-  // var li = jQuery('<li class=\"list-group-item\"></li>');
-  // // target set to _blank will open link in new tab
-  // var anchor = jQuery('<a target="_blank">My current location</a>');
-  //
-  // li.text(`${message.from} ${formattedTime}: `);           // helps prevent anyting trying to inject malicous code
-  // anchor.attr('href', message.url);       // this one too
-  // li.append(anchor);
-  // jQuery('#messages').append(li);
+  scrollToBottom();
 });
 
 // event listener for when user submits form
