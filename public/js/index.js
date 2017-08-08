@@ -12,20 +12,22 @@ socket.on('disconnect', function () {
 
 // listen for newMessage event from server
 socket.on('newMessage', function (message) {
-  console.log('New message object:', message);
+  var formattedTime = moment(message.createdAt).format('h:mm a');
+
   // when new message comes in from server, we wanna render it to screen
   var li = jQuery('<li class=\"list-group-item\"></li>');
-  li.text(`${message.from}: ${message.text}`);
+  li.text(`${message.from} ${formattedTime}: ${message.text}`);
   jQuery('#messages').append(li);
 });
 
 // listen for createLocationMessage event from the server
 socket.on('newLocationMessage', function (message) {
+  var formattedTime = moment(message.createdAt).format('h:mm a');
   var li = jQuery('<li class=\"list-group-item\"></li>');
   // target set to _blank will open link in new tab
   var anchor = jQuery('<a target="_blank">My current location</a>');
 
-  li.text(`${message.from}: `);           // helps prevent anyting trying to inject malicous code
+  li.text(`${message.from} ${formattedTime}: `);           // helps prevent anyting trying to inject malicous code
   anchor.attr('href', message.url);       // this one too
   li.append(anchor);
   jQuery('#messages').append(li);
