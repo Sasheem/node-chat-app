@@ -24,6 +24,22 @@ function scrollToBottom () {
 // event listener for connect event
 socket.on('connect', function () {
   console.log('connected to server');
+  var params = jQuery.deparam(window.location.search);
+
+  // client emits event to let server know to start the process of setting
+  // up a room
+  socket.emit('join', params, function (err) {
+    if (err) {
+      // success
+      // prompt user to re enter valid form
+      alert(err);                    // could call a modal from foundation.. bootstrap etc.
+      window.location.href = '/';
+    } else {
+      // failure
+      // send user to chat room
+      console.log('no error found');
+    }
+  });
 });
 
 // event listener for disconnect event

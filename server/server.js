@@ -6,6 +6,7 @@ const socketIO = require('socket.io');
 
 // local imports
 const {generateMessage, generateLocationMessage} = require('./utils/message');
+const {isRealString} = require('./utils/validation');
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
 
@@ -27,6 +28,15 @@ io.on('connection', (socket) => {
 
   // send message to all users but this one that a new user has joined
   socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined'));
+
+  // listen for a join event from client
+  socket.on('join', (params, callback) => {
+    // check for nonempty strings
+    if (!isRealString(params.name) || !isRealString(params.room)) {
+      callback('Name and room name are required.');
+    }
+    callback();
+  });
 
   // listen for createMessage event from client
   socket.on('createMessage', (message, callback) => {
