@@ -50,30 +50,34 @@ io.on('connection', (socket) => {
 
   // listen for createMessage event from client
   socket.on('createMessage', (message, callback) => {
+    var user = users.getUser(socket.id);
 
-    console.log('created message object', message);
-    // once server receives message, sends it out to be displayed to chat screen?
-    io.emit('newMessage', generateMessage(message.from, message.text));
+    // check for user existence and if message is a valid string
+    if (user && isRealString(message.text)) {
+      // once server receives message, sends it out to be displayed to chat screen?
+      io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
+    }
+
     callback();
   });
 
   // listen for createLocationMessage event from the client
   socket.on('createLocationMessage', (coords) => {
-    // emit a new message event for now with a message containing the url
-    // remember io.emit sends to all users
-    io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
+    var user = users.getUser(socket.id);
+    
+    if (user) {
+      io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
+    }
   });
 
   // listens for disconnected event from client
   socket.on('disconnect', () => {
-
     var user = users.removeUser(socket.id);
-    console.log('user disconnected');
 
     if (user) {
       io.to(user.room).emit('updateUserList', users.getUserList(user.room));
       io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left.`));
-    } 
+    }
   });
 });
 

@@ -38,6 +38,7 @@ class Users {
     // var users = this.users.filter((user) => {
     //   return user.room === room;
     // });
+    
     return namesArray;
   }
 }
