@@ -7,15 +7,17 @@ const socketIO = require('socket.io');
 // local imports
 const {generateMessage, generateLocationMessage} = require('./utils/message');
 const {isRealString} = require('./utils/validation');
+const {Users} = require('./utils/users');
+
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
-
 
 // we need to integrate socket.io into existing web server
 // configure express to work with http ourselves, then do the same for socketio
 var app = express();
 var server = http.createServer(app);
 var io = socketIO(server);              // web socket server, emitting or listening to events
+var users = new Users();
 
 app.use(express.static(publicPath));
 
@@ -23,18 +25,26 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
   console.log('new user connected');
 
-  // send message to user, welcoming them to chat app
-  socket.emit('newMessage', generateMessage('Admin', 'Welcome to the Chat App!'));
-
-  // send message to all users but this one that a new user has joined
-  socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined'));
-
   // listen for a join event from client
   socket.on('join', (params, callback) => {
     // check for nonempty strings
     if (!isRealString(params.name) || !isRealString(params.room)) {
-      callback('Name and room name are required.');
+      return callback('Name and room name are required.');
     }
+
+    socket.join(params.room);            // join a room
+    users.removeUser(socket.id);         // remove user from any previous potential rooms
+    users.addUser(socket.id, params.name, params.room);
+
+    // emit an event to everyone in the chat room
+    io.to(params.room).emit('updateUserList', users.getUserList(params.room));
+
+    // send message to user, welcoming them to chat app
+    socket.emit('newMessage', generateMessage('Admin', 'Welcome to the Chat App!'));
+
+    // send message to all users but this one that a new user has joined
+    socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined`));
+
     callback();
   });
 
@@ -56,7 +66,14 @@ io.on('connection', (socket) => {
 
   // listens for disconnected event from client
   socket.on('disconnect', () => {
+
+    var user = users.removeUser(socket.id);
     console.log('user disconnected');
+
+    if (user) {
+      io.to(user.room).emit('updateUserList', users.getUserList(user.room));
+      io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left.`));
+    } 
   });
 });
 
@@ -67,5 +84,15 @@ server.listen(port, () => {
 
 module.exports = {app};
 
-// socket.emit emits an event to a single connection
-// io.emit emits an event to every connection
+
+// NOTES *********************************************************
+
+// io.emit sends something to every user
+// socket.broadcast.emit sends to every user on socket server, expect sending user
+// socket.emit sends event to one user
+// socket.leave(params.room) will kick user out of the room
+
+// before/after when adding rooms into the mix
+// io.emit -> io.to(params.room).emit
+// socket.broadcast.emit -> socket.broadcast.to(params.room).emit
+// socket.emit ->
